@@ -224,42 +224,69 @@ def split_telco_data(df):
                                    stratify=train_validate.churn)
     return train, validate, test
 
-def prep_telco_data(df):
-    # Drop duplicate columns
-    df.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id', 'customer_id'], inplace=True)
-       
-    # Drop null values stored as whitespace    
+def prep_telco(df):
+    #dropping duplicates
+    df.drop_duplicates(inplace=True)
+    
+    #drop collumns
+    telco_columns_drop = ['contract_type','payment_type','internet_service_type','partner','phone_service','online_security','online_backup','device_protection','streaming_tv','streaming_movies']
+    df = df.drop(columns= telco_columns_drop,axis=1)
+    
+    #strip spces from charges, turn to a float
     df['total_charges'] = df['total_charges'].str.strip()
     df = df[df.total_charges != '']
+    df['total_charges'] = df.total_charges.astype('float')
     
-    # Convert to correct datatype
-    df['total_charges'] = df.total_charges.astype(float)
+    #creating numeric dummmy columns
+    dummy_td = pd.get_dummies(td[['gender','dependents','multiple_lines','tech_support','paperless_billing','churn']], dummy_na=False, drop_first=[True, True])
     
-    # Convert binary categorical variables to numeric
-    df['gender_encoded'] = df.gender.map({'Female': 1, 'Male': 0})
-    df['partner_encoded'] = df.partner.map({'Yes': 1, 'No': 0})
-    df['dependents_encoded'] = df.dependents.map({'Yes': 1, 'No': 0})
-    df['phone_service_encoded'] = df.phone_service.map({'Yes': 1, 'No': 0})
-    df['paperless_billing_encoded'] = df.paperless_billing.map({'Yes': 1, 'No': 0})
-    df['churn_encoded'] = df.churn.map({'Yes': 1, 'No': 0})
+    #concat
+    df = pd.concat([df, dummy_td], axis = 1)
     
-# Get dummies for non-binary categorical variables
-    dummy_df = pd.get_dummies(df[['multiple_lines', \
-                              'online_security', \
-                              'online_backup', \
-                              'device_protection', \
-                              'tech_support', \
-                              'streaming_tv', \
-                              'streaming_movies', \
-                              'contract_type', \
-                              'internet_service_type', \
-                              'payment_type']], dummy_na=False, \
-                              drop_first=True)
-    
-    # Concatenate dummy dataframe to original 
-    df = pd.concat([df, dummy_df], axis=1)
-    
-    # split the data
+    #train validate test
     train, validate, test = split_telco_data(df)
     
     return train, validate, test
+    
+
+
+
+#def prep_telco_data(df):
+    # Drop duplicate columns
+    #df.drop(columns=['payment_type_id', 'internet_service_type_id', 'contract_type_id', 'customer_id'], inplace=True)
+       
+    # Drop null values stored as whitespace    
+    #df['total_charges'] = df['total_charges'].str.strip()
+    #df = df[df.total_charges != '']
+    
+    # Convert to correct datatype
+    #df['total_charges'] = df.total_charges.astype(float)
+    
+    # Convert binary categorical variables to numeric
+    #df['gender_encoded'] = df.gender.map({'Female': 1, 'Male': 0})
+    #df['partner_encoded'] = df.partner.map({'Yes': 1, 'No': 0})
+    #df['dependents_encoded'] = df.dependents.map({'Yes': 1, 'No': 0})
+    #df['phone_service_encoded'] = df.phone_service.map({'Yes': 1, 'No': 0})
+    #df['paperless_billing_encoded'] = df.paperless_billing.map({'Yes': 1, 'No': 0})
+    #df['churn_encoded'] = df.churn.map({'Yes': 1, 'No': 0})
+    
+# Get dummies for non-binary categorical variables
+    #dummy_df = pd.get_dummies(df[['multiple_lines', \
+      #                        'online_security', \
+     #                         'online_backup', \
+     #                         'device_protection', \
+    #                          'tech_support', \
+     #                         'streaming_tv', \
+   #                           'streaming_movies', \
+ #                             'contract_type', \
+  #                            'internet_service_type', \
+#                              'payment_type']], dummy_na=False, \
+    #                          drop_first=True)
+    
+    # Concatenate dummy dataframe to original 
+   # df = pd.concat([df, dummy_df], axis=1)
+    
+    # split the data
+    #train, validate, test = split_telco_data(df)
+    
+    #return train, validate, test
