@@ -226,7 +226,7 @@ def split_telco_data(df):
 
 def prep_telco(df):
     #dropping duplicates
-    df.drop_duplicates(inplace=True)
+    #df.drop_duplicates(inplace=True)
     
     #drop collumns
     telco_columns_drop = ['contract_type','payment_type','internet_service_type','partner','phone_service','online_security','online_backup','device_protection','streaming_tv','streaming_movies']
@@ -238,10 +238,10 @@ def prep_telco(df):
     df['total_charges'] = df.total_charges.astype('float')
     
     #creating numeric dummmy columns
-    dummy_td = pd.get_dummies(td[['gender','dependents','multiple_lines','tech_support','paperless_billing','churn']], dummy_na=False, drop_first=[True, True])
+    dummy_df = pd.get_dummies(df[['gender','dependents','multiple_lines','tech_support','paperless_billing','churn']], dummy_na=False, drop_first=[True, True])
     
     #concat
-    df = pd.concat([df, dummy_td], axis = 1)
+    df = pd.concat([df, dummy_df], axis = 1)
     
     #train validate test
     train, validate, test = split_telco_data(df)
