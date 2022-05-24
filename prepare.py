@@ -1,3 +1,19 @@
+from cgi import test
+import numpy as np
+import seaborn as sns
+import scipy.stats as stats
+import pandas as pd
+import matplotlib.pyplot as plt
+import env
+from pydataset import data
+import scipy
+import os
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+import warnings
+warnings.filterwarnings('ignore')
+
+
 def split_telco_data(df):
     '''
     This function performs split on telco data, stratify churn.
@@ -32,7 +48,6 @@ def prep_telco(df):
     
     #train validate test
     train, validate, test = split_telco_data(df)
-    
+
     return train, validate, test
     
-
